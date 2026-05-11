@@ -189,117 +189,11 @@
       margin: 10px 0;
       color: var(--epm-dark);
     }
-
-    /* Separador */
-    .divider {
-      height: 1px;
-      background: #e5e7eb;
-      margin: 32px 0;
-    }
-
-    /* Lista de Asistentes */
-    .list-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-    }
-
-    .list-header h3 {
-      margin: 0;
-      font-size: 16px;
-      color: var(--text-main);
-    }
-
-    .badge {
-      background: var(--epm-dark);
-      color: #ffffff;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .attendees-list {
-      max-height: 280px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding-right: 5px;
-    }
-
-    /* Scrollbar personalizado */
-    .attendees-list::-webkit-scrollbar { width: 6px; }
-    .attendees-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-    .attendees-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
-
-    .attendee-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 16px;
-      background: var(--epm-gray);
-      border-radius: 10px;
-      transition: background 0.2s;
-    }
-    
-    .attendee-item:hover {
-      background: #e8eaed;
-    }
-
-    .avatar {
-      width: 42px;
-      height: 42px;
-      background: var(--epm-green);
-      color: var(--epm-dark);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-      flex-shrink: 0;
-    }
-
-    .att-details {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .att-name {
-      font-weight: 600;
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .att-cargo {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .empty-msg {
-      font-size: 14px;
-      color: var(--text-muted);
-      text-align: center;
-      padding: 20px;
-      background: #fafafa;
-      border-radius: 8px;
-      border: 1px dashed #d1d5db;
-    }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <!-- Cabecera -->
     <div class="header">
       <div class="logo-box">EPM</div>
       <div class="header-text">
@@ -310,7 +204,6 @@
 
     <div class="content">
       
-      <!-- Sección del Formulario -->
       <div id="form-section">
         <div class="error-msg" id="error-msg">
           <i class="ti ti-alert-circle"></i> Por favor, completa todos los campos (Nombre, Cargo y Empresa).
@@ -326,10 +219,9 @@
           <input type="text" id="cargo" placeholder="Ej. Profesional Estratégico">
         </div>
 
-        <!-- AQUÍ ESTÁ EL CAMPO EMPRESA CLARAMENTE VISIBLE -->
         <div class="form-group">
           <label for="empresa">Empresa</label>
-          <input type="text" id="empresa" placeholder="Ej. EPM, Afinia, ENSA...">
+          <input type="text" id="empresa" placeholder="Ej. EPM, Afinia...">
         </div>
 
         <button class="btn btn-submit" id="btn-submit" onclick="registrar()">
@@ -337,71 +229,23 @@
         </button>
       </div>
 
-      <!-- Sección de Éxito -->
       <div id="success-section">
         <i class="ti ti-circle-check-filled success-icon"></i>
         <h2>¡Registro Exitoso!</h2>
         <div class="success-name" id="success-name-label"></div>
-        <p style="color: #666; font-size: 14px;">Tu asistencia ha sido guardada correctamente en la base de datos.</p>
+        <p style="color: #666; font-size: 14px;">Tu asistencia ha sido guardada correctamente.</p>
         <button class="btn btn-secondary" onclick="nuevaPersona()">
           <i class="ti ti-user-plus"></i> Registrar otra persona
         </button>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- Lista de Asistentes -->
-      <div class="list-header">
-        <h3>Asistentes Registrados</h3>
-        <span class="badge" id="count-badge">0</span>
-      </div>
-      
-      <div class="attendees-list" id="attendees-list">
-        <!-- Los asistentes aparecerán aquí -->
       </div>
 
     </div>
   </div>
 
   <script>
-    // URL DE GOOGLE APPS SCRIPT ACTUALIZADA
+    // URL DE GOOGLE APPS SCRIPT
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyWCJhhim_pR4efGwF8g3khMeVLJXNKv0y6RP_0vaG_0EFfB2moj8sDZlQxnSDrGIvqlg/exec";
     
-    // Recuperar lista del almacenamiento local o iniciar vacía
-    let attendees = JSON.parse(localStorage.getItem('epm_attendees_v2') || '[]');
-
-    function initials(name) {
-      return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-    }
-
-    function saveAttendees() {
-      localStorage.setItem('epm_attendees_v2', JSON.stringify(attendees));
-    }
-
-    function renderList() {
-      const list = document.getElementById('attendees-list');
-      const badge = document.getElementById('count-badge');
-      if(badge) badge.textContent = attendees.length;
-      
-      if (attendees.length === 0) {
-        list.innerHTML = '<div class="empty-msg">Aún no hay asistentes registrados hoy.</div>';
-        return;
-      }
-      
-      // Construir la lista visual
-      list.innerHTML = attendees.map(a => {
-        return `
-          <div class="attendee-item">
-            <div class="avatar">${initials(a.nombre)}</div>
-            <div class="att-details">
-              <div class="att-name">${a.nombre}</div>
-              <div class="att-cargo">${a.cargo} • <strong>${a.empresa}</strong></div>
-            </div>
-          </div>
-        `;
-      }).reverse().join(''); // Reverse para que el último registro salga arriba
-    }
-
     async function sendToGoogleSheets(data) {
       try {
         await fetch(WEB_APP_URL, {
@@ -416,7 +260,6 @@
     }
 
     async function registrar() {
-      // Obtener los valores de los TRES campos
       const nombre = document.getElementById('nombre').value.trim();
       const cargo = document.getElementById('cargo').value.trim();
       const empresa = document.getElementById('empresa').value.trim();
@@ -424,7 +267,6 @@
       const errEl = document.getElementById('error-msg');
       const btn = document.getElementById('btn-submit');
 
-      // Validar que los tres tengan información
       if (!nombre || !cargo || !empresa) { 
         errEl.style.display = 'block'; 
         return; 
@@ -436,13 +278,9 @@
 
       const nuevoRegistro = { nombre, cargo, empresa };
 
-      // 1. Enviar datos a Google Sheets
+      // Enviar datos a Google Sheets
       await sendToGoogleSheets(nuevoRegistro);
 
-      // 2. Guardar en caché local para mostrar la lista
-      attendees.push(nuevoRegistro);
-      saveAttendees();
-      
       // Mostrar pantalla de éxito
       document.getElementById('success-name-label').innerHTML = `${nombre}<br><span style="font-size:14px; font-weight:normal; color:#666;">${cargo} en ${empresa}</span>`;
       document.getElementById('form-section').style.display = 'none';
@@ -451,12 +289,10 @@
       // Restaurar botón
       btn.disabled = false;
       btn.innerHTML = '<i class="ti ti-check"></i> Confirmar Asistencia';
-      
-      renderList();
     }
 
     function nuevaPersona() {
-      // Limpiar los tres campos
+      // Limpiar los campos
       document.getElementById('nombre').value = '';
       document.getElementById('cargo').value = '';
       document.getElementById('empresa').value = '';
@@ -468,9 +304,6 @@
       // Hacer focus en el primer campo
       document.getElementById('nombre').focus();
     }
-
-    // Inicializar la vista al cargar la página
-    renderList();
   </script>
 </body>
 </html>
