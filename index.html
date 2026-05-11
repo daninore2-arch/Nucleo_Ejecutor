@@ -1,629 +1,476 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EPM - Núcleo Corporativo</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,300;0,400;0,500;0,600&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Asistencia - EPM</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    :root {
+      --epm-green: #7ad300;
+      --epm-dark: #242424;
+      --epm-gray: #f4f5f7;
+      --text-main: #333333;
+      --text-muted: #666666;
+      --border-radius: 12px;
+      --font-sans: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: var(--font-sans);
+      background-color: #eef2f5;
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      align-items: flex-start;
+    }
 
-:root{
-  --navy:#001E50;--blue:#0050A0;--blue-l:#EBF3FC;--blue-d:#002F80;
-  --green:#00A651;--green-l:#E8F7EF;--green-d:#007A3D;
-  --amber:#D68000;--amber-l:#FEF3DC;
-  --purple:#6B3FA0;--purple-l:#F2EAFD;
-  --red:#C8332A;--red-l:#FDECEA;
-  
-  --bg:#F5F5F5; 
-  --card:#fff;
-  --border:#E0E0E0;
-  
-  --t1:#001640;--t2:#3D5470;--t3:#8098B5;
-  
-  --sh:0 2px 14px rgba(0,0,0,.06);
-  --sh-m:0 8px 36px rgba(0,0,0,.12);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Barlow',system-ui,sans-serif;background:var(--bg);color:var(--t1);font-size:14px;min-height:100vh}
-.view{display:none}
-.view.active{display:block}
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      border-radius: var(--border-radius);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      overflow: hidden;
+      margin-top: 20px;
+    }
 
-.hdr{background:linear-gradient(128deg,#444444 0%,#1a1a1a 100%);padding:0 18px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99;box-shadow:0 3px 20px rgba(0,0,0,.25)}
-.hdr-brand{display:flex;align-items:center;gap:10px}
-.hdr-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;color:#fff;letter-spacing:.3px;line-height:1.15}
-.hdr-sub{font-size:10px;color:rgba(255,255,255,.5);font-weight:300}
-.hdr-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;padding:6px 13px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;font-family:'Barlow',sans-serif;transition:.2s;white-space:nowrap}
-.hdr-btn:hover{background:rgba(255,255,255,.22)}
-.hdr-btn-g{background:rgba(0,166,81,.3);border-color:rgba(0,166,81,.5)}
-.hdr-btn-g:hover{background:rgba(0,166,81,.45)}
+    /* Cabecera EPM */
+    .header {
+      background-color: var(--epm-dark);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
 
-.land-hero{background:linear-gradient(155deg,#555555 0%,#333333 50%,#1a1a1a 100%);padding:48px 18px 110px;text-align:center;position:relative;overflow:hidden}
-.land-hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 15% 60%,rgba(255,255,255,.05) 0%,transparent 45%),radial-gradient(circle at 85% 25%,rgba(255,255,255,.03) 0%,transparent 40%)}
-.land-h1{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:36px;color:#fff;line-height:1.1;margin-bottom:12px;letter-spacing:.3px;position:relative;z-index:1}
-.land-h1 em{color:#78CFB0;font-style:normal}
-.land-p{color:rgba(255,255,255,.7);max-width:500px;margin:0 auto 32px;font-size:15px;line-height:1.65;font-weight:300;position:relative;z-index:1}
-.land-form-card{background:#fff;border-radius:16px;padding:26px;max-width:450px;margin:0 auto;box-shadow:0 14px 55px rgba(0,0,0,.28);position:relative;z-index:1}
-.lfc-h2{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;color:var(--t1);margin-bottom:18px;display:flex;align-items:center;gap:8px}
-.frow{margin-bottom:13px}
-.flabel{display:block;font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
-.finput{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;color:var(--t1);background:#fff;outline:none;transition:border-color .2s}
-.finput:focus{border-color:var(--blue)}
-.btn-start{width:100%;padding:13px;background:linear-gradient(135deg,#0050A0,#002F80);color:#fff;border:none;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.5px;cursor:pointer;margin-top:4px;transition:all .2s}
-.btn-start:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,80,160,.4)}
-.btn-start:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
-.dims-preview{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;max-width:590px;margin:-52px auto 0;padding:0 18px 36px;position:relative;z-index:2}
-.dpc{background:#fff;border-radius:12px;padding:13px 15px;box-shadow:var(--sh);border-top:3px solid var(--dc);transition:transform .2s}
-.dpc:hover{transform:translateY(-2px)}
-.dpc-icon{font-size:18px;margin-bottom:7px}
-.dpc-name{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;color:var(--t1);margin-bottom:3px}
-.dpc-desc{font-size:11px;color:var(--t3);line-height:1.4}
+    .logo-box {
+      background-color: var(--epm-green);
+      border-radius: 10px;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      color: var(--epm-dark);
+      font-size: 20px;
+      flex-shrink: 0;
+    }
 
-.sv-wrap{max-width:670px;margin:0 auto;padding:18px}
-.sv-prog-bar{background:#fff;border-radius:10px;padding:13px 16px;margin-bottom:16px;box-shadow:var(--sh);display:flex;align-items:center;gap:14px}
-.svp-info{flex:1;min-width:0}
-.svp-name{font-size:13px;font-weight:500;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.svp-unit{font-size:11px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.svp-bar{flex:2}
-.svp-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:3px}
-.svp-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:3px;width:0%;transition:width .4s}
-.svp-pct{font-size:10px;color:var(--t3);text-align:right}
-.dim-block{margin-bottom:16px}
-.dim-blk-hdr{display:flex;align-items:center;gap:10px;padding:11px 15px;border-radius:10px 10px 0 0;border-left:4px solid var(--dbc)}
-.dbn{width:24px;height:24px;border-radius:50%;color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.dbname{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;color:var(--t1)}
-.qcard{background:#fff;padding:15px 16px;border-left:3px solid var(--dbc);margin-bottom:2px;border-radius:0 0 10px 0;}
-.qtext{font-size:14px;font-weight:500;color:var(--t1);line-height:1.6;margin-bottom:11px}
-.lk-anchors{display:flex;justify-content:space-between;margin-bottom:14px; background:var(--bg); padding:10px; border-radius:8px;}
-.lk-a{font-size:11px;font-weight:600;color:var(--t3);max-width:48%;line-height:1.3}
-.lk-a.r{text-align:right}
+    .header-text h1 {
+      margin: 0;
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
 
-.companies-wrap { margin-top: 5px; margin-bottom: 15px;}
-.comp-row { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px dashed var(--border); }
-.comp-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
-.comp-name { width: 35%; font-size: 13px; font-weight: 600; color: var(--t1); }
-.lk-scale { display:flex; gap:5px; align-items:stretch; width: 65%; }
-.lk-opt{flex:1}
-.lk-opt input{display:none}
-.lk-opt label{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 2px;border-radius:8px;border:1.5px solid var(--border);cursor:pointer;background:var(--bg);min-height:38px;height:100%;transition:all .15s}
-.lk-opt label:hover{border-color:var(--dbc)}
-.lk-opt input:checked+label{border-color:var(--dbc);background:var(--dbc)}
-.lk-num{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:var(--sc, var(--t2))}
-.lk-opt input:checked+label .lk-num{color:#fff}
+    .header-text p {
+      margin: 4px 0 0;
+      color: var(--epm-green);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-.ftextarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'Barlow',sans-serif;font-size:13px;color:var(--t1);background:#fff;outline:none;transition:border-color .2s;resize:vertical;min-height:70px;margin-top:5px}
-.ftextarea:focus{border-color:var(--dbc)}
-.ftextarea::placeholder{color:#A0B3C8}
-.q-opinion-label{display:block;font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-top:16px;margin-bottom:4px}
+    .content {
+      padding: 30px;
+    }
 
-.sv-footer{background:#fff;border-radius:12px;padding:18px;box-shadow:var(--sh);margin-top:18px;text-align:center}
-.sv-footer p{font-size:12px;color:var(--t3);margin-bottom:12px}
-.btn-submit{padding:12px 36px;background:linear-gradient(135deg,#00A651,#007A3D);color:#fff;border:none;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:.5px;cursor:pointer;transition:all .2s}
-.btn-submit:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,166,81,.4)}
+    /* Formulario */
+    .form-group {
+      margin-bottom: 20px;
+    }
 
-.thx-wrap{max-width:460px;margin:40px auto;padding:18px;text-align:center}
-.thx-card{background:#fff;border-radius:16px;padding:36px 28px;box-shadow:var(--sh-m)}
-.thx-icon{font-size:48px;margin-bottom:14px}
-.thx-h1{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:26px;color:var(--t1);margin-bottom:8px}
-.thx-p{font-size:14px;color:var(--t2);line-height:1.6;margin-bottom:20px}
-.score-disp{background:var(--bg);border-radius:12px;padding:18px;margin-bottom:20px}
-.score-big{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:54px;color:var(--t1);line-height:1}
-.score-of{font-size:16px;color:var(--t3);font-weight:300}
-.btn-gdash{width:100%;padding:12px;background:linear-gradient(135deg,#0050A0,#002F80);color:#fff;border:none;border-radius:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:.5px;cursor:pointer;transition:all .2s;margin-bottom:8px}
-.btn-gdash:hover{transform:translateY(-1px);box-shadow:0 6px 22px rgba(0,80,160,.4)}
-.btn-otra{width:100%;padding:10px;background:transparent;border:1.5px solid var(--border);color:var(--t2);border-radius:10px;font-family:'Barlow',sans-serif;font-size:13px;cursor:pointer;transition:.2s}
-.btn-otra:hover{border-color:var(--blue);color:var(--blue)}
+    label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
 
-.dash-wrap{max-width:720px;margin:0 auto;padding:18px}
-.dash-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin-bottom:16px}
-.kpi{background:#fff;border-radius:12px;padding:15px 17px;box-shadow:var(--sh)}
-.kpi-lbl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);margin-bottom:5px}
-.kpi-val{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:34px;color:var(--t1);line-height:1;margin-bottom:2px}
-.kpi-sub{font-size:11px;color:var(--t3)}
-.kpi-prog{height:4px;background:var(--border);border-radius:2px;margin-top:8px;overflow:hidden}
-.kpi-pfill{height:100%;border-radius:2px;transition:width .7s}
-.lvlpill{display:inline-flex;padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600;margin-top:7px}
+    input[type="text"] {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 15px;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+      background-color: #fafafa;
+    }
 
-.charts-row{display:grid;grid-template-columns:1.35fr 1fr;gap:12px;margin-bottom:16px}
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--epm-green);
+      background-color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(122, 211, 0, 0.1);
+    }
 
-.cc{background:#fff;border-radius:12px;padding:15px 17px;box-shadow:var(--sh)}
-.cc h3{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;color:var(--t1);margin-bottom:12px}
-.hbar-row{margin-bottom:9px}
-.hbar-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px}
-.hbar-name{font-size:12px;font-weight:500;color:var(--t1)}
-.hbar-val{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px}
-.hbar-track{height:7px;background:var(--border);border-radius:4px;overflow:hidden}
-.hbar-fill{height:100%;border-radius:4px;transition:width .7s}
-.matrix-card{background:#fff;border-radius:12px;padding:15px 17px;box-shadow:var(--sh);margin-bottom:16px}
-.matrix-card h3{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;color:var(--t1);margin-bottom:11px}
-.mrow{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:8px;border:1.5px solid var(--border);margin-bottom:7px;transition:.15s}
-.mrow.active{border-color:var(--mc);background:var(--mcl)}
-.mdot{width:9px;height:9px;border-radius:50%;background:var(--mc);flex-shrink:0;margin-top:4px}
-.mrange{font-size:11px;font-weight:600;color:var(--t3);min-width:70px}
-.mrow.active .mrange{color:var(--mc)}
-.mlevel{font-size:13px;font-weight:600;color:var(--t1);margin-bottom:2px}
-.mdesc{font-size:11.5px;color:var(--t2);line-height:1.4}
-.no-data{text-align:center;padding:50px 20px;color:var(--t3)}
-.no-data-icon{font-size:36px;margin-bottom:10px}
-.dash-add-btn{text-align:center;margin-top:14px;padding-bottom:10px}
-.dash-add-btn button{padding:10px 24px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:.2s}
-.dash-add-btn button:hover{opacity:.85}
-.loading-dash{text-align:center;padding:50px;color:var(--t3);font-size:14px}
+    /* Botones */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
 
-@media(max-width:560px){
-  .dims-preview{grid-template-columns:1fr}
-  .dash-top{grid-template-columns:1fr 1fr}
-  .charts-row{grid-template-columns:1fr}
-  .land-h1{font-size:27px}
-  .dash-top .kpi:first-child{grid-column:span 2}
-  
-  .comp-row { flex-direction: column; align-items: flex-start; gap: 8px; }
-  .comp-name { width: 100%; }
-  .lk-scale { width: 100%; }
-}
-</style>
+    .btn-submit {
+      background-color: var(--epm-green);
+      color: var(--epm-dark);
+      margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+      background-color: #8be600;
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:disabled {
+      background-color: #e5e7eb;
+      color: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border: 2px solid var(--epm-dark);
+      color: var(--epm-dark);
+      margin-top: 16px;
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--epm-dark);
+      color: #ffffff;
+    }
+
+    /* Mensajes */
+    .error-msg {
+      color: #dc2626;
+      font-size: 13px;
+      margin-top: -10px;
+      margin-bottom: 15px;
+      display: none;
+      background: #fef2f2;
+      padding: 10px;
+      border-radius: 6px;
+      border-left: 4px solid #dc2626;
+    }
+
+    #success-section {
+      text-align: center;
+      display: none;
+      padding: 20px 0;
+    }
+
+    .success-icon {
+      font-size: 56px;
+      color: var(--epm-green);
+      margin-bottom: 16px;
+    }
+    
+    .success-name {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 10px 0;
+      color: var(--epm-dark);
+    }
+
+    /* Separador */
+    .divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 32px 0;
+    }
+
+    /* Lista de Asistentes */
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .list-header h3 {
+      margin: 0;
+      font-size: 16px;
+      color: var(--text-main);
+    }
+
+    .badge {
+      background: var(--epm-dark);
+      color: #ffffff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .attendees-list {
+      max-height: 280px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 5px;
+    }
+
+    /* Scrollbar personalizado */
+    .attendees-list::-webkit-scrollbar { width: 6px; }
+    .attendees-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+    .attendees-list::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+
+    .attendee-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      background: var(--epm-gray);
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+    
+    .attendee-item:hover {
+      background: #e8eaed;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      background: var(--epm-green);
+      color: var(--epm-dark);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .att-details {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .att-name {
+      font-weight: 600;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .att-cargo {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .empty-msg {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 20px;
+      background: #fafafa;
+      border-radius: 8px;
+      border: 1px dashed #d1d5db;
+    }
+  </style>
 </head>
 <body>
-<div id="app">
 
-<header class="hdr">
-  <div class="hdr-brand">
-    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-      <circle cx="18" cy="18" r="16" stroke="rgba(255,255,255,.15)" stroke-width="1.5"/>
-      <circle cx="18" cy="10" r="4.5" fill="#78CFB0"/>
-      <circle cx="26" cy="23" r="4.5" fill="#4A90D9"/>
-      <circle cx="10" cy="23" r="4.5" fill="#4A90D9"/>
-      <line x1="18" y1="14.5" x2="23.5" y2="19" stroke="rgba(255,255,255,.38)" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="18" y1="14.5" x2="12.5" y2="19" stroke="rgba(255,255,255,.38)" stroke-width="1.5" stroke-linecap="round"/>
-      <line x1="22" y1="23" x2="14" y2="23" stroke="rgba(255,255,255,.38)" stroke-width="1.5" stroke-linecap="round"/>
-    </svg>
-    <div>
-      <div class="hdr-title">Grupo EPM</div>
-      <div class="hdr-sub">Núcleo Corporativo</div>
-    </div>
-  </div>
-  <button class="hdr-btn hdr-btn-g" onclick="goToDashboard()">📊 Resultados grupales</button>
-</header>
-
-<div id="vl" class="view">
-  <div class="land-hero">
-    <svg width="88" height="88" viewBox="0 0 88 88" fill="none" style="margin:0 auto 22px;display:block;position:relative;z-index:1">
-      <circle cx="44" cy="44" r="42" stroke="rgba(255,255,255,.07)" stroke-width="2"/>
-      <circle cx="44" cy="44" r="27" stroke="rgba(255,255,255,.05)" stroke-width="1"/>
-      <circle cx="44" cy="44" r="9" fill="#00A651" opacity=".9"/>
-      <circle cx="44" cy="16" r="5.5" fill="#78CFB0"/>
-      <circle cx="68" cy="31" r="5.5" fill="#4A90D9"/>
-      <circle cx="68" cy="59" r="5.5" fill="#4A90D9"/>
-      <circle cx="44" cy="74" r="5.5" fill="#78CFB0"/>
-      <circle cx="20" cy="59" r="5.5" fill="#4A90D9"/>
-      <circle cx="20" cy="31" r="5.5" fill="#4A90D9"/>
-      <line x1="44" y1="35" x2="44" y2="21.5" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/>
-      <line x1="52" y1="40" x2="63.5" y2="33.5" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/>
-      <line x1="52" y1="50" x2="63.5" y2="56.5" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/>
-      <line x1="44" y1="53" x2="44" y2="68.5" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/>
-      <line x1="36" y1="50" x2="24.5" y2="56.5" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/>
-      <line x1="36" y1="40" x2="24.5" y2="33.5" stroke="rgba(255,255,255,.28)" stroke-width="1.5"/>
-    </svg>
-    <h1 class="land-h1">Núcleo Corporativo</h1>
-    <p class="land-p">Evalúe el grado de integración estratégica del Grupo EPM a través de 4 dimensiones clave. Evalúe de manera independiente a cada empresa.</p>
-    <div class="land-form-card">
-      <div class="lfc-h2">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3.5" stroke="#0050A0" stroke-width="1.4"/><path d="M2 16c0-3.866 3.134-7 7-7s7 3.134 7 7" stroke="#0050A0" stroke-width="1.4" stroke-linecap="round"/></svg>
-        Datos del participante
+  <div class="container">
+    <!-- Cabecera -->
+    <div class="header">
+      <div class="logo-box">EPM</div>
+      <div class="header-text">
+        <h1>Registro de Asistencia</h1>
+        <p>Núcleo Estratégico</p>
       </div>
-      <div class="frow">
-        <label class="flabel" for="inp-name">Nombre completo</label>
-        <input class="finput" id="inp-name" type="text" placeholder="Ej. María García">
-      </div>
-      <div class="frow">
-        <label class="flabel" for="inp-cargo">Cargo</label>
-        <input class="finput" id="inp-cargo" type="text" placeholder="Ej. Gerente de Planeación Estratégica">
-      </div>
-      <button class="btn-start" id="btn-start" onclick="startSurvey()" disabled>Iniciar diagnóstico →</button>
     </div>
-  </div>
-  <div class="dims-preview">
-    <div class="dpc" style="--dc:#0050A0"><div class="dpc-icon">⚖️</div><div class="dpc-name">Decisiones</div><div class="dpc-desc">Del desconocimiento al respeto y valor del rol</div></div>
-    <div class="dpc" style="--dc:#00A651"><div class="dpc-icon">🔭</div><div class="dpc-name">Visión de Grupo</div><div class="dpc-desc">Del aislamiento a la visión común compartida</div></div>
-    <div class="dpc" style="--dc:#6B3FA0"><div class="dpc-icon">🎯</div><div class="dpc-name">Actuar</div><div class="dpc-desc">De asumir roles del núcleo al enfoque de ejecutor</div></div>
-    <div class="dpc" style="--dc:#D68000"><div class="dpc-icon">🚀</div><div class="dpc-name">Despliegue</div><div class="dpc-desc">Del conocimiento directivo a la irradiación total</div></div>
-  </div>
-</div>
 
-<div id="vs" class="view">
-  <div class="sv-wrap">
-    <div class="sv-prog-bar">
-      <div class="svp-info"><div class="svp-name" id="svp-name">—</div><div class="svp-unit" id="svp-unit">—</div></div>
-      <div class="svp-bar"><div class="svp-track"><div class="svp-fill" id="svp-fill"></div></div><div class="svp-pct" id="svp-pct">0 de 36 respondidas</div></div>
-    </div>
-    <div id="survey-qs"></div>
-    <div class="sv-footer">
-      <p id="submit-msg">Al enviar, sus promedios quedarán registrados para el análisis estratégico del Grupo EPM.</p>
-      <button class="btn-submit" id="btn-submit" onclick="submitSurvey()">Enviar diagnóstico ✓</button>
-    </div>
-  </div>
-</div>
-
-<div id="vt" class="view">
-  <div class="thx-wrap">
-    <div class="thx-card">
-      <div class="thx-icon">✅</div>
-      <h1 class="thx-h1">¡Diagnóstico enviado!</h1>
-      <p class="thx-p">Sus aportes han sido registrados exitosamente.</p>
-      <div class="score-disp">
-        <div class="score-big" id="thx-score">—</div>
-        <div class="score-of">de 20 puntos totales</div>
-        <div id="thx-level-badge" style="margin-top:8px"></div>
-      </div>
-      <div id="thx-dim-bars" style="margin-bottom:20px"></div>
-      <button class="btn-gdash" onclick="goToDashboard()">Ver resultados del grupo →</button>
-      <button class="btn-otra" onclick="resetAndGoLanding()">Registrar otra persona</button>
-    </div>
-  </div>
-</div>
-
-<div id="vd" class="view">
-  <div class="dash-wrap">
-    <div id="dash-content"><div class="loading-dash">⏳ Cargando datos del Grupo EPM…</div></div>
-  </div>
-</div>
-
-</div>
-
-<script>
-/* ---- DATA ---- */
-const COMPANIES = ['EPM Ejecutor', 'CENS', 'ESSA', 'CHEC', 'EDEQ', 'AFINIA', 'ENSA', 'EPM Guatemala', 'DELSUR'];
-
-const DIMS=[
-  {id:1,name:'Decisiones',color:'#0050A0',colorL:'#EBF3FC',a1:'Desconoce el rol del Núcleo, no le encuentra valor',a5:'Conoce, respeta y encuentra valor al rol de Núcleo'},
-  {id:2,name:'Visión de Grupo',color:'#00A651',colorL:'#E8F7EF',a1:'Aislado, la empresa actúa como un actor independiente',a5:'La empresa comprende que hace parte de un Grupo y comparte una visión común'},
-  {id:3,name:'Actuar',color:'#6B3FA0',colorL:'#F2EAFD',a1:'Asume responsabilidades del Núcleo',a5:'Actúa bajo el enfoque de ejecutor y comprende cuando escalar asuntos al núcleo o cuándo éste debe intervenir'},
-  {id:4,name:'Despliegue',color:'#D68000',colorL:'#FEF3DC',a1:'No se percibe conocimiento del rol de núcleo en otros niveles además del directivo',a5:'Se evidencia que desde la cabeza de la empresa se llevan a cabo esfuerzos para irradiar al resto de la compañía el entendimiento del rol de núcleo'}
-];
-
-const ICONS=['⚖️','🔭','🎯','🚀'];
-const SCOLORS = ['#C8332A', '#E8641B', '#D68000', '#5CB836', '#00A651']; 
-
-const QS=[
-  {dim:1,num:1,title:'Evaluación de la Dimensión', text:'¿Cómo evalúa el proceso de toma de decisiones?', a1:'Desconoce el rol del Núcleo, no le encuentra valor', a5:'Conoce, respeta y encuentra valor al rol de Núcleo'},
-  {dim:2,num:2,title:'Evaluación de la Dimensión', text:'¿Cómo describe la integración de la empresa frente a la visión del Grupo EPM?', a1:'Aislado, la empresa actúa como un actor independiente', a5:'La empresa comprende que hace parte de un Grupo y comparte una visión común'},
-  {dim:3,num:3,title:'Evaluación de la Dimensión', text:'¿Cómo es el actuar de la empresa respecto a las responsabilidades y el relacionamiento con el Núcleo?', a1:'Asume responsabilidades del Núcleo', a5:'Actúa bajo el enfoque de ejecutor y comprende cuando escalar asuntos al núcleo o cuándo éste debe intervenir'},
-  {dim:4,num:4,title:'Evaluación de la Dimensión', text:'¿Qué tan difundido está el conocimiento sobre el rol del Núcleo dentro de la compañía?', a1:'No se percibe conocimiento del rol de núcleo en otros niveles además del directivo', a5:'Se evidencia que desde la cabeza de la empresa se llevan a cabo esfuerzos para irradiar al resto de la compañía el entendimiento del rol de núcleo'}
-];
-
-const LEVELS=[
-  {min:4,max:8,name:'Fragmentación Crítica',color:'#C8332A',colorL:'#FDECEA', desc:'El núcleo es puramente nominal. Alto riesgo de ineficiencia operativa.'},
-  {min:9,max:12,name:'Transición Reactiva',color:'#D68000',colorL:'#FEF3DC', desc:'Hay esfuerzos por unir la organización, pero los silos predominan en la cultura.'},
-  {min:13,max:16,name:'Alineación Funcional',color:'#0050A0',colorL:'#EBF3FC', desc:'El núcleo ya genera valor coherente. Falta agilidad en el despliegue a escala.'},
-  {min:17,max:20,name:'Núcleo de Alto Rendimiento',color:'#00A651',colorL:'#E8F7EF', desc:'El Grupo opera de manera sinérgica con máxima eficiencia y capacidad de implementación.'}
-];
-
-function getLevel(s){return LEVELS.find(l=>s>=l.min&&s<=l.max)||LEVELS[0]}
-
-/* ---- STORAGE (GOOGLE SHEETS) ---- */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwfPygTFyeRI71pmNIKB3RyZecbcBD_gIOCeBo1RbkuKADTWZ9Vs1GfGZifHymj0ueO2Q/exec";
-
-async function getResponses(){
-  try {
-    const r = await fetch(SCRIPT_URL);
-    const data = await r.json();
-    return data.map(row => ({
-      name: row.nombre || 'Anónimo',
-      cargo: row.cargo || '-',
-      timestamp: row.fecha || new Date().toISOString(),
-      dimScores: [
-        parseFloat(row.dim1) || 0,
-        parseFloat(row.dim2) || 0,
-        parseFloat(row.dim3) || 0,
-        parseFloat(row.dim4) || 0
-      ],
-      total: parseFloat(row.total) || 0
-    }));
-  } catch(e) {
-    console.error("Error consultando Google Sheets:", e);
-    return [];
-  }
-}
-
-async function saveResponse(resp){
-  try {
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      body: JSON.stringify({
-        name: resp.name,
-        cargo: resp.cargo,
-        dimScores: resp.dimScores, 
-        companyScores: resp.companyScores, 
-        total: resp.total,
-        comments: resp.comments
-      })
-    });
-    return true;
-  } catch(e) {
-    console.error("Error guardando en Google Sheets:", e);
-    return false;
-  }
-}
-
-/* ---- VIEWS ---- */
-let currentUser={};
-function showView(id){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-}
-function goToDashboard(){showView('vd');loadDashboard();}
-function resetAndGoLanding(){
-  ['inp-name','inp-cargo'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('btn-start').disabled=true;
-  showView('vl');
-}
-
-/* ---- LANDING ---- */
-['inp-name','inp-cargo'].forEach(id=>{
-  document.getElementById(id).addEventListener('input',checkForm);
-});
-function checkForm(){
-  const ok=document.getElementById('inp-name').value.trim()&&
-    document.getElementById('inp-cargo').value.trim();
-  document.getElementById('btn-start').disabled=!ok;
-}
-
-/* ---- SURVEY BUILD ---- */
-function startSurvey(){
-  const name=document.getElementById('inp-name').value.trim();
-  const cargo=document.getElementById('inp-cargo').value.trim();
-  if(!name||!cargo)return;
-  currentUser={name,cargo};
-  document.getElementById('svp-name').textContent=name;
-  document.getElementById('svp-unit').textContent=cargo;
-  buildSurvey();
-  showView('vs');
-  document.querySelectorAll('#survey-qs input[type=radio]').forEach(i=>i.addEventListener('change',updateProg));
-}
-
-function buildSurvey(){
-  let html='';
-  DIMS.forEach((dim,di)=>{
-    const q=QS.find(q=>q.dim===dim.id); 
-    const qi=di+1;
-    
-    html+=`<div class="dim-block">
-      <div class="dim-blk-hdr" style="--dbc:${dim.color};background:${dim.colorL};border-color:${dim.color}">
-        <div class="dbn" style="background:${dim.color}">${qi}</div>
-        <div>
-          <div class="dbname">${ICONS[di]} ${dim.name}</div>
+    <div class="content">
+      
+      <!-- Sección del Formulario -->
+      <div id="form-section">
+        <div class="error-msg" id="error-msg">
+          <i class="ti ti-alert-circle"></i> Por favor, completa todos los campos (Nombre, Cargo y Empresa).
         </div>
+
+        <div class="form-group">
+          <label for="nombre">Nombre Completo</label>
+          <input type="text" id="nombre" placeholder="Ej. Juan Pérez">
+        </div>
+
+        <div class="form-group">
+          <label for="cargo">Cargo</label>
+          <input type="text" id="cargo" placeholder="Ej. Profesional Estratégico">
+        </div>
+
+        <!-- AQUÍ ESTÁ EL CAMPO EMPRESA CLARAMENTE VISIBLE -->
+        <div class="form-group">
+          <label for="empresa">Empresa</label>
+          <input type="text" id="empresa" placeholder="Ej. EPM, Afinia, ENSA...">
+        </div>
+
+        <button class="btn btn-submit" id="btn-submit" onclick="registrar()">
+          <i class="ti ti-check"></i> Confirmar Asistencia
+        </button>
+      </div>
+
+      <!-- Sección de Éxito -->
+      <div id="success-section">
+        <i class="ti ti-circle-check-filled success-icon"></i>
+        <h2>¡Registro Exitoso!</h2>
+        <div class="success-name" id="success-name-label"></div>
+        <p style="color: #666; font-size: 14px;">Tu asistencia ha sido guardada correctamente en la base de datos.</p>
+        <button class="btn btn-secondary" onclick="nuevaPersona()">
+          <i class="ti ti-user-plus"></i> Registrar otra persona
+        </button>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Lista de Asistentes -->
+      <div class="list-header">
+        <h3>Asistentes Registrados</h3>
+        <span class="badge" id="count-badge">0</span>
       </div>
       
-      <div class="qcard" style="--dbc:${dim.color}">
-        <div class="qtext">${q.text}</div>
-        
-        <div class="lk-anchors">
-          <div class="lk-a"><strong>1</strong> - ${q.a1}</div>
-          <div class="lk-a r"><strong>5</strong> - ${q.a5}</div>
-        </div>
-        
-        <div class="companies-wrap">`;
-        
-    COMPANIES.forEach((comp, ci)=>{
-      html+=`<div class="comp-row">
-        <div class="comp-name">${comp}</div>
-        <div class="lk-scale">`;
-        for(let v=1;v<=5;v++){
-          html+=`<div class="lk-opt">
-            <input type="radio" name="q${qi}_c${ci}" value="${v}" id="q${qi}_c${ci}_v${v}">
-            <label for="q${qi}_c${ci}_v${v}" style="--dbc:${SCOLORS[v-1]}; --sc:${SCOLORS[v-1]}">
-              <span class="lk-num">${v}</span>
-            </label>
-          </div>`;
-        }
-      html+=`</div></div>`;
-    });
-    
-    html+=`</div>
-        <label class="q-opinion-label" for="c${qi}">Justificación / Opiniones (Opcional):</label>
-        <textarea class="ftextarea" id="c${qi}" style="--dbc:${dim.color}" placeholder="Escriba aquí sus observaciones o justificación general para esta dimensión..."></textarea>
+      <div class="attendees-list" id="attendees-list">
+        <!-- Los asistentes aparecerán aquí -->
       </div>
-    </div>`;
-  });
-  document.getElementById('survey-qs').innerHTML=html;
-}
 
-function updateProg(){
-  let ans=0;
-  const totalQ = 4 * COMPANIES.length;
-  for(let i=1;i<=4;i++){
-    for(let c=0;c<COMPANIES.length;c++){
-      if(document.querySelector(`input[name="q${i}_c${c}"]:checked`)) ans++;
+    </div>
+  </div>
+
+  <script>
+    // URL DE GOOGLE APPS SCRIPT ACTUALIZADA
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyWCJhhim_pR4efGwF8g3khMeVLJXNKv0y6RP_0vaG_0EFfB2moj8sDZlQxnSDrGIvqlg/exec";
+    
+    // Recuperar lista del almacenamiento local o iniciar vacía
+    let attendees = JSON.parse(localStorage.getItem('epm_attendees_v2') || '[]');
+
+    function initials(name) {
+      return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
     }
-  }
-  const pct=Math.round((ans/totalQ)*100);
-  document.getElementById('svp-fill').style.width=pct+'%';
-  document.getElementById('svp-pct').textContent=ans+' de '+totalQ+' evaluadas';
-}
 
-/* ---- SUBMIT ---- */
-async function submitSurvey(){
-  const answers=[]; 
-  const companyScores=[]; 
-  const comments=[];
-  
-  for(let i=1;i<=4;i++){
-    let sum = 0;
-    let compRow = [];
-    for(let c=0;c<COMPANIES.length;c++){
-      const el=document.querySelector(`input[name="q${i}_c${c}"]:checked`);
-      if(!el){
-        alert(`Faltan empresas por evaluar en la dimensión: ${DIMS[i-1].name}`);
+    function saveAttendees() {
+      localStorage.setItem('epm_attendees_v2', JSON.stringify(attendees));
+    }
+
+    function renderList() {
+      const list = document.getElementById('attendees-list');
+      const badge = document.getElementById('count-badge');
+      if(badge) badge.textContent = attendees.length;
+      
+      if (attendees.length === 0) {
+        list.innerHTML = '<div class="empty-msg">Aún no hay asistentes registrados hoy.</div>';
         return;
       }
-      const val = parseInt(el.value);
-      sum += val;
-      compRow.push(val); 
+      
+      // Construir la lista visual
+      list.innerHTML = attendees.map(a => {
+        return `
+          <div class="attendee-item">
+            <div class="avatar">${initials(a.nombre)}</div>
+            <div class="att-details">
+              <div class="att-name">${a.nombre}</div>
+              <div class="att-cargo">${a.cargo} • <strong>${a.empresa}</strong></div>
+            </div>
+          </div>
+        `;
+      }).reverse().join(''); // Reverse para que el último registro salga arriba
     }
-    const avg = parseFloat((sum / COMPANIES.length).toFixed(2));
-    answers.push(avg); 
-    companyScores.push(compRow); 
-    comments.push(document.getElementById(`c${i}`).value.trim());
-  }
-  
-  document.getElementById('btn-submit').innerText = "Guardando...";
-  document.getElementById('btn-submit').disabled = true;
 
-  const dimScores=[...answers]; 
-  const total = parseFloat(answers.reduce((a,b)=>a+b,0).toFixed(2));
-  
-  const resp={
-    id:Date.now(),
-    name:currentUser.name,
-    cargo:currentUser.cargo,
-    timestamp:new Date().toISOString(),
-    dimScores,
-    companyScores, 
-    total,
-    comments
-  };
-  
-  await saveResponse(resp);
+    async function sendToGoogleSheets(data) {
+      try {
+        await fetch(WEB_APP_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+      } catch (error) {
+        console.error("Error de red al enviar a Google Sheets:", error);
+      }
+    }
 
-  document.getElementById('btn-submit').innerText = "Enviar diagnóstico ✓";
-  document.getElementById('btn-submit').disabled = false;
+    async function registrar() {
+      // Obtener los valores de los TRES campos
+      const nombre = document.getElementById('nombre').value.trim();
+      const cargo = document.getElementById('cargo').value.trim();
+      const empresa = document.getElementById('empresa').value.trim();
+      
+      const errEl = document.getElementById('error-msg');
+      const btn = document.getElementById('btn-submit');
 
-  const lv=getLevel(Math.round(total));
-  document.getElementById('thx-score').textContent=total;
-  document.getElementById('thx-level-badge').innerHTML=
-    `<span style="display:inline-block;background:${lv.colorL};color:${lv.color};padding:4px 14px;border-radius:20px;font-size:13px;font-weight:600">${lv.name}</span>`;
+      // Validar que los tres tengan información
+      if (!nombre || !cargo || !empresa) { 
+        errEl.style.display = 'block'; 
+        return; 
+      }
 
-  let bars='';
-  DIMS.forEach((dim,i)=>{
-    const pct=Math.round((dimScores[i]/5)*100); 
-    bars+=`<div style="margin-bottom:9px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">
-        <span style="font-size:12px;font-weight:500;color:#001640">${ICONS[i]} ${dim.name}</span>
-        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;color:${dim.color}">Promedio: ${dimScores[i]}/5</span>
-      </div>
-      <div style="height:6px;background:#EEF3FA;border-radius:3px;overflow:hidden">
-        <div style="height:100%;width:${pct}%;background:${dim.color};border-radius:3px"></div>
-      </div>
-    </div>`;
-  });
-  document.getElementById('thx-dim-bars').innerHTML=bars;
-  showView('vt');
-}
+      errEl.style.display = 'none';
+      btn.disabled = true;
+      btn.innerHTML = '<i class="ti ti-loader"></i> Guardando...';
 
-/* ---- DASHBOARD ---- */
-async function loadDashboard(){
-  document.getElementById('dash-content').innerHTML='<div class="loading-dash">⏳ Sincronizando datos...</div>';
-  const responses=await getResponses();
-  renderDashboard(responses);
-}
+      const nuevoRegistro = { nombre, cargo, empresa };
 
-function renderDashboard(responses){
-  const dc=document.getElementById('dash-content');
-  if(!responses || !responses.length){
-    dc.innerHTML=`<div class="no-data"><div class="no-data-icon">📊</div><p style="font-size:14px;color:#3D5470">Aún no hay respuestas registradas.</p></div>`;
-    return;
-  }
-  const n=responses.length;
-  const avgTotal=responses.reduce((s,r)=>s+r.total,0)/n;
-  const avgDims=[0,0,0,0];
-  responses.forEach(r=>r.dimScores.forEach((v,i)=>{avgDims[i]+=v;}));
-  avgDims.forEach((v,i)=>{avgDims[i]=v/n;});
-  const gLv=getLevel(Math.round(avgTotal));
-  const weakIdx=avgDims.indexOf(Math.min(...avgDims));
+      // 1. Enviar datos a Google Sheets
+      await sendToGoogleSheets(nuevoRegistro);
 
-  dc.innerHTML=`
-    <div class="dash-top">
-      <div class="kpi">
-        <div class="kpi-lbl">Puntaje Promedio Grupal</div>
-        <div class="kpi-val">${avgTotal.toFixed(1)}<span style="font-size:16px;font-weight:300;color:#8098B5">/20</span></div>
-        <div class="kpi-prog"><div class="kpi-pfill" style="width:${(avgTotal/20)*100}%;background:${gLv.color}"></div></div>
-        <div class="lvlpill" style="background:${gLv.colorL};color:${gLv.color}">${gLv.name}</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-lbl">Participantes</div>
-        <div class="kpi-val">${n}</div>
-        <div class="kpi-sub">respuestas registradas</div>
-      </div>
-      <div class="kpi">
-        <div class="kpi-lbl">Dimensión más débil</div>
-        <div style="font-size:26px;margin:4px 0">${ICONS[weakIdx]}</div>
-        <div class="kpi-sub" style="font-size:11px">${DIMS[weakIdx].name}<br><strong style="color:${DIMS[weakIdx].color}">${avgDims[weakIdx].toFixed(1)}/5</strong></div>
-      </div>
-    </div>
+      // 2. Guardar en caché local para mostrar la lista
+      attendees.push(nuevoRegistro);
+      saveAttendees();
+      
+      // Mostrar pantalla de éxito
+      document.getElementById('success-name-label').innerHTML = `${nombre}<br><span style="font-size:14px; font-weight:normal; color:#666;">${cargo} en ${empresa}</span>`;
+      document.getElementById('form-section').style.display = 'none';
+      document.getElementById('success-section').style.display = 'block';
+      
+      // Restaurar botón
+      btn.disabled = false;
+      btn.innerHTML = '<i class="ti ti-check"></i> Confirmar Asistencia';
+      
+      renderList();
+    }
 
-    <div class="charts-row">
-      <div class="cc">
-        <h3>Perfil por Dimensión</h3>
-        ${buildRadar(avgDims)}
-      </div>
-      <div class="cc">
-        <h3>Promedio por Dimensión</h3>
-        ${buildBars(avgDims)}
-      </div>
-    </div>
+    function nuevaPersona() {
+      // Limpiar los tres campos
+      document.getElementById('nombre').value = '';
+      document.getElementById('cargo').value = '';
+      document.getElementById('empresa').value = '';
+      
+      // Cambiar vistas
+      document.getElementById('success-section').style.display = 'none';
+      document.getElementById('form-section').style.display = 'block';
+      
+      // Hacer focus en el primer campo
+      document.getElementById('nombre').focus();
+    }
 
-    <div class="matrix-card">
-      <h3>Matriz de Interpretación de Resultados</h3>
-      ${buildMatrix(Math.round(avgTotal))}
-    </div>
-
-    <div class="dash-add-btn">
-      <button onclick="showView('vl')">+ Registrar participante</button>
-    </div>
-  `;
-}
-
-function buildRadar(avgDims){
-  const cx=180,cy=120,r=75; 
-  const pts=[[cx,cy-r],[cx+r,cy],[cx,cy+r],[cx-r,cy]];
-  let grid='';
-  [.2,.4,.6,.8,1].forEach(f=>{
-    const p=pts.map(([ax,ay])=>`${cx+(ax-cx)*f},${cy+(ay-cy)*f}`).join(' ');
-    grid+=`<polygon points="${p}" fill="none" stroke="#D0DDF0" stroke-width="1"/>`;
-  });
-  const axes=pts.map(([ax,ay])=>`<line x1="${cx}" y1="${cy}" x2="${ax}" y2="${ay}" stroke="#D0DDF0" stroke-width="1"/>`).join('');
-  const vals=avgDims.map(v=>v/5); 
-  const dpts=pts.map(([ax,ay],i)=>[cx+(ax-cx)*vals[i],cy+(ay-cy)*vals[i]]);
-  const dpoly=dpts.map(([x,y])=>`${x},${y}`).join(' ');
-  const ldots=dpts.map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="4.5" fill="${DIMS[i].color}" stroke="#fff" stroke-width="1.5"/>`).join('');
-  const lvals=dpts.map(([x,y],i)=>`<text x="${x}" y="${y-8}" font-size="10" fill="${DIMS[i].color}" font-family="Barlow Condensed,sans-serif" font-weight="700" text-anchor="middle">${avgDims[i].toFixed(1)}</text>`).join('');
-  
-  const anchors = ['middle', 'start', 'middle', 'end']; 
-  const lblx = [cx, cx+r+8, cx, cx-r-8];
-  const lbly = [cy-r-12, cy+4, cy+r+18, cy+4];
-  const lbls=DIMS.map((d,i)=>`<text x="${lblx[i]}" y="${lbly[i]}" text-anchor="${anchors[i]}" font-size="11.5" fill="#3D5470" font-family="Barlow,sans-serif" font-weight="600">${ICONS[i]} ${d.name}</text>`).join('');
-  
-  return `<svg viewBox="0 0 360 240" style="display:block;margin:0 auto;width:100%;max-width:360px">${grid}${axes}<polygon points="${dpoly}" fill="${DIMS[0].color}" fill-opacity=".12" stroke="${DIMS[0].color}" stroke-width="2"/>${ldots}${lvals}${lbls}</svg>`;
-}
-
-function buildBars(avgDims){
-  return DIMS.map((d,i)=>{
-    const pct=Math.round((avgDims[i]/5)*100); 
-    return `<div class="hbar-row">
-      <div class="hbar-top">
-        <div class="hbar-name">${ICONS[i]} ${d.name}</div>
-        <div class="hbar-val" style="color:${d.color}">${avgDims[i].toFixed(1)}/5</div>
-      </div>
-      <div class="hbar-track"><div class="hbar-fill" style="width:${pct}%;background:${d.color}"></div></div>
-    </div>`;
-  }).join('');
-}
-
-function buildMatrix(avg){
-  return LEVELS.map(lv=>{
-    const active=avg>=lv.min&&avg<=lv.max;
-    return `<div class="mrow${active?' active':''}" style="--mc:${lv.color};--mcl:${lv.colorL}">
-      <div class="mdot" style="background:${lv.color}"></div>
-      <div class="mrange">${lv.min}–${lv.max} pts</div>
-      <div><div class="mlevel">${lv.name}</div><div class="mdesc">${lv.desc}</div></div>
-    </div>`;
-  }).join('');
-}
-
-/* ---- INIT ---- */
-showView('vl');
-</script>
+    // Inicializar la vista al cargar la página
+    renderList();
+  </script>
 </body>
 </html>
